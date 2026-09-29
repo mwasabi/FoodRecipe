@@ -1,5 +1,6 @@
 ﻿using FoodRecipe.Entity;
 using FoodRecipe.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodRecipe.Controllers
@@ -16,20 +17,82 @@ namespace FoodRecipe.Controllers
             _service = service;
         }
         [HttpGet("AllItems")]
-        public async virtual Task<IEnumerable<TEntity>> GetAsync()
+        public async virtual Task<ActionResult<IEnumerable<TEntity>>> GetAll(CancellationToken ct = default)
         {
-            return await _service.GetAllAsync();
+            try 
+            {
+                _logger.LogInformation("HTTP GET All для {EntityType}", typeof(TEntity).Name);
+                
+                bool isAdmin = User.IsInRole("Admin");
+
+                var items = await _service.GetAllAsync(isAdmin, ct);
+                
+                return Ok(items);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка в GetAll: {Message}", ex.Message);
+                return StatusCode(500, "Внутренняя ошибка сервера.");
+            }   
+
         }
         [HttpGet("GetItemById")]
         public async virtual Task<TEntity> GetByIdAsync(Guid id)
         {
             return await _service.GetByIdAsync(id);
         }
-        
-        [HttpDelete("Delete")]
-        public virtual async Task<bool> DeleteAsync([FromQuery] Guid id)
+
+        [HttpDelete("{id:guid}/permanent")]
+        [AllowAnonymous] // Временно для тестов без авторизации
+        public virtual async Task<IActionResult> PermanentDelete(Guid id, CancellationToken ct = default)
         {
-            return await _service.DeleteAsync(id);
+            try
+            {
+                _logger.LogWarning("HTTP DELETE PERMANENT (HARD DELETE) — Id: {Id} | Пользователь: {User}", id, User.Identity?.Name ?? "аноним");
+
+                // Вызываем жесткое удаление из сервиса
+                var success = await _service.DeleteAsync(id, ct);
+
+                if (!success)
+                {
+                    _logger.LogWarning("Hard Delete: сущность не найдена — Id: {Id}", id);
+                    return NotFound($"Сущность с Id = {id} не найдена.");
+                }
+
+                _logger.LogCritical("ВНИМАНИЕ! ВЫПОЛНЕНО ПОЛНОЕ УДАЛЕНИЕ ИЗ БД — Id: {Id} | Тип: {EntityType}", id, typeof(TEntity).Name);
+                return NoContent(); // 204
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Критическая ошибка при Hard Delete — Id: {Id}", id);
+                return StatusCode(500, "Внутренняя ошибка сервера.");
+            }
+        }
+
+        [HttpDelete("{id:guid}")]
+        [AllowAnonymous]
+        public virtual async Task<IActionResult> Delete(Guid id, CancellationToken ct = default)
+        {
+            try
+            {
+                _logger.LogInformation("HTTP DELETE (soft) - Id: {Id} | Пользователь: {User}", id, User.Identity?.Name ?? "аноним");
+                
+                var success = await _service.SoftDeleteAsync(id, ct);
+
+                if (!success)
+                {
+                    _logger.LogWarning("SoftDelete: Сущность не найдена или уже удалена - Id: {Id}", id);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("SoftDelete успешно выполнен - Id: {Id}", id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Критическая ошибка при Soft Delete - Id: {Id}", id);
+                return StatusCode(500, "Внутренняя ошибка сервера.");
+            }
         }
     }
 }  
