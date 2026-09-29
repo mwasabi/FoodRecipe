@@ -82,7 +82,7 @@
         }
       }
     },
-    "/Categories/Delete": {
+    "/Categories/{id}/permanent": {
       "delete": {
         "tags": [
           "Categories"
@@ -90,7 +90,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -99,24 +100,30 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/Categories/{id}": {
+      "delete": {
+        "tags": [
+          "Categories"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -198,7 +205,7 @@
         }
       }
     },
-    "/Ingridients/Delete": {
+    "/Ingridients/{id}/permanent": {
       "delete": {
         "tags": [
           "Ingridients"
@@ -206,7 +213,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -215,24 +223,30 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/Ingridients/{id}": {
+      "delete": {
+        "tags": [
+          "Ingridients"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -294,6 +308,9 @@
             "type": "string",
             "format": "date-time"
           },
+          "isDeleted": {
+            "type": "boolean"
+          },
           "name": {
             "type": "string",
             "nullable": true
@@ -322,6 +339,9 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
           },
           "name": {
             "type": "string",
@@ -355,6 +375,9 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
           },
           "name": {
             "type": "string",

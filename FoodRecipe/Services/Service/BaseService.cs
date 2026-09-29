@@ -7,25 +7,21 @@ namespace FoodRecipe.Services.Service
 {
     public class BaseService<T> : IBaseService<T> where T : BaseEntity
     {
-        private readonly IConfiguration _config;
+        private readonly IPostgreSQLRepository<T> _repository;
         private readonly AppDbContext _context;
-
-        IPostgreSQLRepository<T> _repository;
 
         public BaseService(
             IPostgreSQLRepository<T> repository,
-            IConfiguration config,
             AppDbContext context
             )
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken ct = default)
+        public async Task<IEnumerable<T>> GetAllAsync(bool isAdmin, CancellationToken ct = default)
         {
-            return await _repository.GetAllAsync(ct);
+            return await _repository.GetAllAsync(isAdmin, ct);
         }
 
         public async Task<T?> GetByIdAsync(Guid id, CancellationToken ct = default)
@@ -41,6 +37,20 @@ namespace FoodRecipe.Services.Service
                 return false;
 
             return await _repository.DeleteAsync(id, ct);
+        }
+        public virtual async Task<bool> SoftDeleteAsync(Guid id, CancellationToken ct = default)
+        {
+            var entity = await _repository.GetByIdAsync(id, ct);
+
+            if (entity == null || entity.IsDeleted)
+            {
+                return false;
+            }
+
+            entity.IsDeleted = true;
+
+            await _repository.UpdateAsync(entity, ct);
+            return true;
         }
     }
 
