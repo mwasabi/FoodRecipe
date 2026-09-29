@@ -33,31 +33,7 @@ namespace FoodRecipe.Services.Service
             return await _repository.GetByIdAsync(id, ct);
         }
 
-        public async Task<T> CreateAsync(T item, CancellationToken ct = default)
-        {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
-
-            return await _repository.CreateAsync(item, ct);
-        }
-
-        public async Task<bool> UpdateAsync(Guid id, T item, CancellationToken ct = default)
-        {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
-
-            // Проверяем, существует ли запись
-            var existing = await _repository.GetByIdAsync(id, ct);
-            if (existing == null)
-                return false;
-
-            // Копируем данные из item в существующий объект (если нужно)
-            // Здесь можно использовать AutoMapper или написать вручную
-            // Например: CopyProperties(item, existing);
-
-            return await _repository.UpdateAsync(item, ct);
-        }
-
+       
         public async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
         {
             var existing = await _repository.GetByIdAsync(id, ct);

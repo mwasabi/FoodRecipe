@@ -82,56 +82,8 @@
         }
       }
     },
-    "/Categories/Create": {
-      "post": {
-        "tags": [
-          "Categories"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Category"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Category"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Category"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Categories/Update": {
-      "put": {
+    "/Categories/Delete": {
+      "delete": {
         "tags": [
           "Categories"
         ],
@@ -145,25 +97,6 @@
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "OK",
@@ -188,10 +121,87 @@
         }
       }
     },
-    "/Categories/Delete": {
+    "/Ingridients/AllItems": {
+      "get": {
+        "tags": [
+          "Ingridients"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingridients"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingridients"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingridients"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Ingridients/GetItemById": {
+      "get": {
+        "tags": [
+          "Ingridients"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ingridients"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ingridients"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ingridients"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Ingridients/Delete": {
       "delete": {
         "tags": [
-          "Categories"
+          "Ingridients"
         ],
         "parameters": [
           {
@@ -294,10 +304,39 @@
               "$ref": "#/components/schemas/Recipe"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Ingridients": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
           },
-          "item": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
             "type": "string",
             "nullable": true
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recipeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "recipe": {
+            "$ref": "#/components/schemas/Recipe"
           }
         },
         "additionalProperties": false
@@ -335,6 +374,13 @@
           "cookingTimeMinutes": {
             "type": "integer",
             "format": "int32"
+          },
+          "ingridients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ingridients"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
