@@ -17,7 +17,7 @@ namespace FoodRecipe.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken ct, Expression<Func<T, bool>>? filter = null)
+        public async Task<IEnumerable<T>> GetAllAsync(bool isAdmin, CancellationToken ct, Expression<Func<T, bool>>? filter = null)
         {
             IQueryable<T> query = _dbSet.AsNoTracking();
             if (filter != null)
