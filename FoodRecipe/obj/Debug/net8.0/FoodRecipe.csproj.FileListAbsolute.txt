@@ -111,3 +111,4 @@ C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\obj\Debug\net8.0\refint\Fo
 C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\obj\Debug\net8.0\FoodRecipe.pdb
 C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\obj\Debug\net8.0\FoodRecipe.genruntimeconfig.cache
 C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\obj\Debug\net8.0\ref\FoodRecipe.dll
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\obj\Debug\net8.0\FoodRecipe.sourcelink.json

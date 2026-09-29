@@ -25,16 +25,7 @@ namespace FoodRecipe.Controllers
         {
             return await _service.GetByIdAsync(id);
         }
-        [HttpPost("Create")]
-        public virtual async Task<TEntity> PostAsync([FromBody] TEntity item)
-        {
-            return await _service.CreateAsync(item);
-        }
-        [HttpPut("Update")]
-        public virtual async Task<bool> PutAsync([FromQuery] Guid id, [FromBody] TEntity item)
-        {
-            return await _service.UpdateAsync(id, item);
-        }
+        
         [HttpDelete("Delete")]
         public virtual async Task<bool> DeleteAsync([FromQuery] Guid id)
         {
