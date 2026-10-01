@@ -22,8 +22,10 @@ namespace FoodRecipe.Controllers
             try 
             {
                 _logger.LogInformation("HTTP GET All для {EntityType}", typeof(TEntity).Name);
-                
-                bool isAdmin = User.IsInRole("Admin");
+
+                // Проверяем роль только если пользователь вообще прошел аутентификацию
+                bool isAdmin = User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin");
+
 
                 var items = await _service.GetAllAsync(isAdmin, ct);
                 

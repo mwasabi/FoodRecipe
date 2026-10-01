@@ -52,6 +52,19 @@ namespace FoodRecipe.Services.Service
             await _repository.UpdateAsync(entity, ct);
             return true;
         }
+        public async Task<T> AddAsync(T entity, CancellationToken ct = default)
+        {
+            // Вызываем метод добавления из твоего репозитория
+            await _repository.AddAsync(entity, ct);
+            return entity;
+        }
+
+        public async Task<bool> UpdateAsync(T entity, CancellationToken ct = default)
+        {
+            // Вызываем метод обновления из твоего репозитория
+            return await _repository.UpdateAsync(entity, ct);
+        }
+
     }
 
 

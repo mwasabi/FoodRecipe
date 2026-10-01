@@ -32,7 +32,7 @@ namespace FoodRecipe.Repositories
             return await _dbSet.FindAsync(new object[] { id }, ct);
         }
 
-        public async Task<T> CreateAsync(T item, CancellationToken ct = default)
+        public async Task<T> AddAsync(T item, CancellationToken ct = default)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
 

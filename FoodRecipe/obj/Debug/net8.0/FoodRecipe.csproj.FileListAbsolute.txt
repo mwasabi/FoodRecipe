@@ -112,3 +112,12 @@ C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\obj\Debug\net8.0\FoodRecip
 C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\obj\Debug\net8.0\FoodRecipe.genruntimeconfig.cache
 C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\obj\Debug\net8.0\ref\FoodRecipe.dll
 C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\obj\Debug\net8.0\FoodRecipe.sourcelink.json
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\wasab\OneDrive\Desktop\FoodRecipe\FoodRecipe\bin\Debug\net8.0\EFCore.NamingConventions.dll

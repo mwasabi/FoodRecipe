@@ -8,6 +8,10 @@ namespace FoodRecipe.Services.IService
 
         Task<TEntity?> GetByIdAsync(Guid id, CancellationToken ct = default);
 
+        Task<TEntity> AddAsync(TEntity entity, CancellationToken ct = default);
+
+        Task<bool> UpdateAsync(TEntity entity, CancellationToken ct = default);
+
         Task<bool> DeleteAsync(Guid id, CancellationToken ct = default);
         
         Task<bool> SoftDeleteAsync(Guid id, CancellationToken ct = default);
