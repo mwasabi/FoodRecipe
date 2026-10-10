@@ -1,4 +1,4 @@
-﻿namespace FoodRecipe.DTO
+﻿namespace FoodRecipe.DTO.Category
 {
     public class CategoryUpdateDTO
     {

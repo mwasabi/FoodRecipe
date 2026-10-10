@@ -1,5 +1,5 @@
 ﻿namespace FoodRecipe.DTO.Recipe;
-public class RecipeUpdateDto
+public class RecipeUpdateDTO
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
