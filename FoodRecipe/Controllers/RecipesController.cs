@@ -30,6 +30,8 @@ public class RecipesController : BaseController<Recipe>
                 Id = Guid.NewGuid(),
                 Name = dto.Name,
                 Description = dto.Description,
+                CookingTimeMinutes = dto.CookingTimeMinutes,
+                CategoryId = dto.CategoryId,
                 UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,

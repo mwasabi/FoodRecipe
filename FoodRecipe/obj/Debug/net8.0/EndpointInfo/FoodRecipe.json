@@ -5,7 +5,7 @@
     "version": "v1"
   },
   "paths": {
-    "/api/Auth/register": {
+    "/api/Auth/email/send-code": {
       "post": {
         "tags": [
           "Auth"
@@ -14,17 +14,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterDto"
+                "$ref": "#/components/schemas/SendCodeDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterDto"
+                "$ref": "#/components/schemas/SendCodeDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterDto"
+                "$ref": "#/components/schemas/SendCodeDto"
               }
             }
           }
@@ -36,7 +36,7 @@
         }
       }
     },
-    "/api/Auth/login": {
+    "/api/Auth/email/verify": {
       "post": {
         "tags": [
           "Auth"
@@ -45,17 +45,91 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginDto"
+                "$ref": "#/components/schemas/VerifyCodeDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginDto"
+                "$ref": "#/components/schemas/VerifyCodeDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginDto"
+                "$ref": "#/components/schemas/VerifyCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/google": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/name": {
+      "put": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetNameDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetNameDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetNameDto"
               }
             }
           }
@@ -261,26 +335,26 @@
         }
       }
     },
-    "/Ingridients": {
+    "/Ingredients": {
       "post": {
         "tags": [
-          "Ingridients"
+          "Ingredients"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IngridientsCreateDTO"
+                "$ref": "#/components/schemas/IngredientsCreateDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/IngridientsCreateDTO"
+                "$ref": "#/components/schemas/IngredientsCreateDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/IngridientsCreateDTO"
+                "$ref": "#/components/schemas/IngredientsCreateDTO"
               }
             }
           }
@@ -292,10 +366,10 @@
         }
       }
     },
-    "/Ingridients/{id}": {
+    "/Ingredients/{id}": {
       "put": {
         "tags": [
-          "Ingridients"
+          "Ingredients"
         ],
         "parameters": [
           {
@@ -312,17 +386,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IngridientsUpdateDTO"
+                "$ref": "#/components/schemas/IngredientsUpdateDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/IngridientsUpdateDTO"
+                "$ref": "#/components/schemas/IngredientsUpdateDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/IngridientsUpdateDTO"
+                "$ref": "#/components/schemas/IngredientsUpdateDTO"
               }
             }
           }
@@ -335,7 +409,7 @@
       },
       "delete": {
         "tags": [
-          "Ingridients"
+          "Ingredients"
         ],
         "parameters": [
           {
@@ -355,10 +429,10 @@
         }
       }
     },
-    "/Ingridients/AllItems": {
+    "/Ingredients/AllItems": {
       "get": {
         "tags": [
-          "Ingridients"
+          "Ingredients"
         ],
         "responses": {
           "200": {
@@ -368,7 +442,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Ingridients"
+                    "$ref": "#/components/schemas/Ingredients"
                   }
                 }
               },
@@ -376,7 +450,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Ingridients"
+                    "$ref": "#/components/schemas/Ingredients"
                   }
                 }
               },
@@ -384,7 +458,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Ingridients"
+                    "$ref": "#/components/schemas/Ingredients"
                   }
                 }
               }
@@ -393,10 +467,10 @@
         }
       }
     },
-    "/Ingridients/GetItemById": {
+    "/Ingredients/GetItemById": {
       "get": {
         "tags": [
-          "Ingridients"
+          "Ingredients"
         ],
         "parameters": [
           {
@@ -414,17 +488,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/Ingridients"
+                  "$ref": "#/components/schemas/Ingredients"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Ingridients"
+                  "$ref": "#/components/schemas/Ingredients"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Ingridients"
+                  "$ref": "#/components/schemas/Ingredients"
                 }
               }
             }
@@ -432,10 +506,10 @@
         }
       }
     },
-    "/Ingridients/{id}/permanent": {
+    "/Ingredients/{id}/permanent": {
       "delete": {
         "tags": [
-          "Ingridients"
+          "Ingredients"
         ],
         "parameters": [
           {
@@ -649,6 +723,200 @@
         }
       }
     },
+    "/api/RecipeSteps": {
+      "post": {
+        "tags": [
+          "RecipeSteps"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeStepsCreateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeStepsCreateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeStepsCreateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/RecipeSteps/{id}": {
+      "put": {
+        "tags": [
+          "RecipeSteps"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeStepsUpdateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeStepsUpdateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeStepsUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "RecipeSteps"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/RecipeSteps/AllItems": {
+      "get": {
+        "tags": [
+          "RecipeSteps"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeSteps"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeSteps"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeSteps"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RecipeSteps/GetItemById": {
+      "get": {
+        "tags": [
+          "RecipeSteps"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeSteps"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeSteps"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeSteps"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RecipeSteps/{id}/permanent": {
+      "delete": {
+        "tags": [
+          "RecipeSteps"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/WeatherForecast": {
       "get": {
         "tags": [
@@ -743,7 +1011,38 @@
         },
         "additionalProperties": false
       },
-      "Ingridients": {
+      "GoogleLoginDto": {
+        "required": [
+          "idToken"
+        ],
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IngredientItemDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Ingredients": {
         "type": "object",
         "properties": {
           "id": {
@@ -766,8 +1065,12 @@
             "nullable": true
           },
           "quantity": {
-            "type": "integer",
-            "format": "int32"
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "type": "string",
+            "nullable": true
           },
           "recipeId": {
             "type": "string",
@@ -779,42 +1082,35 @@
         },
         "additionalProperties": false
       },
-      "IngridientsCreateDTO": {
+      "IngredientsCreateDTO": {
+        "type": "object",
+        "properties": {
+          "recipeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IngredientItemDTO"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IngredientsUpdateDTO": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
             "nullable": true
           },
-          "recipeId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "additionalProperties": false
-      },
-      "IngridientsUpdateDTO": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true
+          "quantity": {
+            "type": "number",
+            "format": "double"
           },
-          "recipeId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "additionalProperties": false
-      },
-      "LoginDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
+          "unit": {
             "type": "string",
             "nullable": true
           }
@@ -862,15 +1158,22 @@
             "type": "integer",
             "format": "int32"
           },
-          "ingridients": {
+          "ingredients": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Ingridients"
+              "$ref": "#/components/schemas/Ingredients"
             },
             "nullable": true
           },
           "userId": {
             "type": "string",
+            "nullable": true
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeSteps"
+            },
             "nullable": true
           }
         },
@@ -898,6 +1201,87 @@
         },
         "additionalProperties": false
       },
+      "RecipeStepItemDTO": {
+        "type": "object",
+        "properties": {
+          "stepNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipeSteps": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "stepNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "recipeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "recipe": {
+            "$ref": "#/components/schemas/Recipe"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipeStepsCreateDTO": {
+        "type": "object",
+        "properties": {
+          "recipeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeStepItemDTO"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipeStepsUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "stepNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "RecipeUpdateDTO": {
         "type": "object",
         "properties": {
@@ -920,20 +1304,52 @@
         },
         "additionalProperties": false
       },
-      "RegisterDto": {
+      "SendCodeDto": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "maxLength": 254,
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SetNameDto": {
+        "required": [
+          "name"
+        ],
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "nullable": true
-          },
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "VerifyCodeDto": {
+        "required": [
+          "code",
+          "email"
+        ],
+        "type": "object",
+        "properties": {
           "email": {
+            "maxLength": 254,
+            "minLength": 1,
             "type": "string",
-            "nullable": true
+            "format": "email"
           },
-          "password": {
-            "type": "string",
-            "nullable": true
+          "code": {
+            "maxLength": 6,
+            "minLength": 6,
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -964,10 +1380,10 @@
     },
     "securitySchemes": {
       "Bearer": {
-        "type": "apiKey",
-        "description": "Введите JWT токен в формате: Bearer {твой_токен}",
-        "name": "Authorization",
-        "in": "header"
+        "type": "http",
+        "description": "Вставьте JWT токен (без слова Bearer)",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   },

@@ -1,15 +1,15 @@
 [
   {
     "ContainingType": "FoodRecipe.Controllers.AuthController",
-    "Method": "Login",
-    "RelativePath": "api/Auth/login",
+    "Method": "SendCode",
+    "RelativePath": "api/Auth/email/send-code",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "FoodRecipe.DTO.Authentication.LoginDto",
+        "Type": "FoodRecipe.DTO.Authentication.SendCodeDto",
         "IsRequired": true
       }
     ],
@@ -17,15 +17,57 @@
   },
   {
     "ContainingType": "FoodRecipe.Controllers.AuthController",
-    "Method": "Register",
-    "RelativePath": "api/Auth/register",
+    "Method": "Verify",
+    "RelativePath": "api/Auth/email/verify",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "FoodRecipe.DTO.Authentication.RegisterDto",
+        "Type": "FoodRecipe.DTO.Authentication.VerifyCodeDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FoodRecipe.Controllers.AuthController",
+    "Method": "Google",
+    "RelativePath": "api/Auth/google",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FoodRecipe.DTO.Authentication.GoogleLoginDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FoodRecipe.Controllers.AuthController",
+    "Method": "Me",
+    "RelativePath": "api/Auth/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FoodRecipe.Controllers.AuthController",
+    "Method": "SetName",
+    "RelativePath": "api/Auth/name",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FoodRecipe.DTO.Authentication.SetNameDto",
         "IsRequired": true
       }
     ],
@@ -262,25 +304,25 @@
     ]
   },
   {
-    "ContainingType": "FoodRecipe.Controllers.IngridientsController",
+    "ContainingType": "FoodRecipe.Controllers.RecipeStepsController",
     "Method": "Create",
-    "RelativePath": "Ingridients",
+    "RelativePath": "api/RecipeSteps",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "FoodRecipe.DTO.Ingridients.IngridientsCreateDTO",
+        "Type": "FoodRecipe.DTO.RecipeSteps.RecipeStepsCreateDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FoodRecipe.Controllers.IngridientsController",
+    "ContainingType": "FoodRecipe.Controllers.RecipeStepsController",
     "Method": "Update",
-    "RelativePath": "Ingridients/{id}",
+    "RelativePath": "api/RecipeSteps/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -292,16 +334,16 @@
       },
       {
         "Name": "dto",
-        "Type": "FoodRecipe.DTO.Ingridients.IngridientsUpdateDTO",
+        "Type": "FoodRecipe.DTO.RecipeSteps.RecipeStepsUpdateDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.Ingridients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.RecipeSteps, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
     "Method": "Delete",
-    "RelativePath": "Ingridients/{id}",
+    "RelativePath": "api/RecipeSteps/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -315,9 +357,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.Ingridients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.RecipeSteps, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
     "Method": "PermanentDelete",
-    "RelativePath": "Ingridients/{id}/permanent",
+    "RelativePath": "api/RecipeSteps/{id}/permanent",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -331,16 +373,16 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.Ingridients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.RecipeSteps, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
     "Method": "GetAll",
-    "RelativePath": "Ingridients/AllItems",
+    "RelativePath": "api/RecipeSteps/AllItems",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[FoodRecipe.Entity.Ingridients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[FoodRecipe.Entity.RecipeSteps, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -351,9 +393,9 @@
     ]
   },
   {
-    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.Ingridients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.RecipeSteps, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
     "Method": "GetByIdAsync",
-    "RelativePath": "Ingridients/GetItemById",
+    "RelativePath": "api/RecipeSteps/GetItemById",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -366,7 +408,122 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "FoodRecipe.Entity.Ingridients",
+        "Type": "FoodRecipe.Entity.RecipeSteps",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "FoodRecipe.Controllers.IngredientsController",
+    "Method": "Create",
+    "RelativePath": "Ingredients",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FoodRecipe.DTO.Ingredients.FoodRecipe.DTO.Ingredients.IngredientsCreateDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FoodRecipe.Controllers.IngredientsController",
+    "Method": "Update",
+    "RelativePath": "Ingredients/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "FoodRecipe.DTO.Ingredients.IngredientsUpdateDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.Ingredients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Delete",
+    "RelativePath": "Ingredients/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.Ingredients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "PermanentDelete",
+    "RelativePath": "Ingredients/{id}/permanent",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.Ingredients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetAll",
+    "RelativePath": "Ingredients/AllItems",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[FoodRecipe.Entity.Ingredients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "FoodRecipe.Controllers.BaseController\u00601[[FoodRecipe.Entity.Ingredients, FoodRecipe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetByIdAsync",
+    "RelativePath": "Ingredients/GetItemById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "FoodRecipe.Entity.Ingredients",
         "MediaTypes": [
           "text/plain",
           "application/json",

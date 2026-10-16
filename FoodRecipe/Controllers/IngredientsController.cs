@@ -1,4 +1,5 @@
-﻿using FoodRecipe.DTO.Ingridients;
+﻿using FoodRecipe.DTO.Ingredients;
+using FoodRecipe.DTO.Ingredients.FoodRecipe.DTO.Ingredients;
 using FoodRecipe.Entity;
 using FoodRecipe.Services.IService;
 using Microsoft.AspNetCore.Authorization;
@@ -10,23 +11,26 @@ namespace FoodRecipe.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = "User,Admin")]
-    public class IngridientsController : BaseController<Ingridients>
+    public class IngredientsController : BaseController<Ingredients>
     {
         private readonly IBaseService<Recipe> _recipeService;
 
-        public IngridientsController(
-            ILogger<IngridientsController> logger,
-            IBaseService<Ingridients> service,
+        public IngredientsController(
+            ILogger<IngredientsController> logger,
+            IBaseService<Ingredients> service,
             IBaseService<Recipe> recipeService) : base(logger, service)
         {
             _recipeService = recipeService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] IngridientsCreateDTO dto, CancellationToken ct = default)
+        public async Task<IActionResult> Create([FromBody] IngredientsCreateDTO dto, CancellationToken ct = default)
         {
             try
             {
+                if (dto.Ingredients == null || dto.Ingredients.Count == 0)
+                    return BadRequest("Список ингредиентов пуст.");
+
                 var recipe = await _recipeService.GetByIdAsync(dto.RecipeId, ct);
                 if (recipe == null)
                     return NotFound("Рецепт не найден.");
@@ -35,31 +39,40 @@ namespace FoodRecipe.Controllers
                 if (recipe.UserId != userId && !User.IsInRole("Admin"))
                     return Forbid();
 
-                var ingridient = new Ingridients
+                var created = new List<object>();
+
+                foreach (var item in dto.Ingredients)
                 {
-                    Id = Guid.NewGuid(),
-                    Name = dto.Name,
-                    RecipeId = dto.RecipeId,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false
-                };
+                    var ingredient = new Ingredients
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = item.Name,
+                        Quantity = item.Quantity,
+                        Unit = item.Unit,
+                        RecipeId = dto.RecipeId,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
 
-                await _service.AddAsync(ingridient, ct);
-                _logger.LogInformation("Пользователь {UserId} добавил ингредиент {Name} в рецепт {RecipeId}",
-                    userId, dto.Name, dto.RecipeId);
+                    await _service.AddAsync(ingredient, ct);
+                    created.Add(new { ingredient.Id, ingredient.Name, ingredient.Quantity, ingredient.Unit });
+                }
 
-                return Created($"/api/Ingridients/{ingridient.Id}", ingridient);
+                _logger.LogInformation("Пользователь {UserId} добавил {Count} ингредиентов в рецепт {RecipeId}",
+                    userId, dto.Ingredients.Count, dto.RecipeId);
+
+                return Created($"/api/Recipes/{dto.RecipeId}", created);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при создании ингредиента");
+                _logger.LogError(ex, "Ошибка при создании ингредиентов");
                 return StatusCode(500, "Внутренняя ошибка сервера.");
             }
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] IngridientsUpdateDTO dto, CancellationToken ct = default)
+        public async Task<IActionResult> Update(Guid id, [FromBody] IngredientsUpdateDTO dto, CancellationToken ct = default)
         {
             try
             {
@@ -76,6 +89,8 @@ namespace FoodRecipe.Controllers
                     return Forbid();
 
                 existing.Name = dto.Name;
+                existing.Quantity = dto.Quantity;
+                existing.Unit = dto.Unit;
                 existing.UpdatedAt = DateTime.UtcNow;
 
                 await _service.UpdateAsync(existing, ct);

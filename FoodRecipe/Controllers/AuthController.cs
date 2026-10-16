@@ -1,88 +1,105 @@
-﻿using FoodRecipe.Data;
-using FoodRecipe.DTO.Authentication;
-using FoodRecipe.Entity;
-using FoodRecipe.Enums;
+﻿using FoodRecipe.DTO.Authentication;
+using FoodRecipe.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
-using System.Text;
 
 namespace FoodRecipe.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableRateLimiting("auth")]
     public class AuthController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IAuthService _auth;
 
-        public AuthController(AppDbContext context)
+        public AuthController(IAuthService auth)
         {
-            _context = context;
+            _auth = auth;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto dto)
+        // 1. Отправить код на email (вход и регистрация одним и тем же способом)
+        [HttpPost("email/send-code")]
+        public async Task<IActionResult> SendCode([FromBody] SendCodeDto dto, CancellationToken ct)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
-            { 
-                return BadRequest("Пользователь с таким Email уже существует.");
+            try
+            {
+                await _auth.SendCodeAsync(dto.Email, ct);
+                return Ok(new { message = "Код отправлен" });
             }
-
-            var passwordHash = Convert.ToBase64String(Encoding.UTF8.GetBytes(dto.Password));
-
-            var user = new User
+            catch (AuthException ex)
             {
-                Id = Guid.NewGuid(),
-                Name = dto.Name,
-                Email = dto.Email,
-                PasswordHash = passwordHash,
-                Role = UserRole.User
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok("Регистрация прошла успешно.");
+                return Fail(ex);
+            }
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto dto)
+        // 2. Проверить код и получить токен
+        [HttpPost("email/verify")]
+        public async Task<IActionResult> Verify([FromBody] VerifyCodeDto dto, CancellationToken ct)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (user == null) return BadRequest("Неверный Email или пароль.");
-            
-            var incomigHash = Convert.ToBase64String(Encoding.UTF8.GetBytes(dto.Password));
-            if (user.PasswordHash != incomigHash) return BadRequest("Неверный Email или пароль.");
-
-            var claims = new[]
-{
-    new Claim("id", user.Id.ToString()), // <-- Заменили ClaimTypes.NameIdentifier на простой "id"
-    new Claim(ClaimTypes.Name, user.Name),
-    new Claim(ClaimTypes.Role, user.Role.ToString())
-};
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperSecretKeyWithLongLengthForSecurity123!"));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
+            try
             {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = creds,
-
-                // !!! ДОБАВЛЯЕМ ЭТИ ДВЕ СТРОЧКИ СЮДА !!!
-                Issuer = "FoodRecipeServer",
-                Audience = "FoodRecipeClient"
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-            return Ok(new { Token = tokenString });
-
+                return Ok(await _auth.VerifyCodeAsync(dto.Email, dto.Code, ct));
+            }
+            catch (AuthException ex)
+            {
+                return Fail(ex);
+            }
         }
+
+        // 3. Вход через Google (фронтенд присылает idToken)
+        [HttpPost("google")]
+        public async Task<IActionResult> Google([FromBody] GoogleLoginDto dto, CancellationToken ct)
+        {
+            try
+            {
+                return Ok(await _auth.GoogleAsync(dto.IdToken, ct));
+            }
+            catch (AuthException ex)
+            {
+                return Fail(ex);
+            }
+        }
+
+        // 4. Данные текущего пользователя
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> Me(CancellationToken ct)
+        {
+            if (!TryGetUserId(out var userId)) return Unauthorized();
+
+            try
+            {
+                return Ok(await _auth.GetMeAsync(userId, ct));
+            }
+            catch (AuthException ex)
+            {
+                return Fail(ex);
+            }
+        }
+
+        // 5. Сохранить имя после первого входа
+        [Authorize]
+        [HttpPut("name")]
+        public async Task<IActionResult> SetName([FromBody] SetNameDto dto, CancellationToken ct)
+        {
+            if (!TryGetUserId(out var userId)) return Unauthorized();
+
+            try
+            {
+                return Ok(await _auth.SetNameAsync(userId, dto.Name, ct));
+            }
+            catch (AuthException ex)
+            {
+                return Fail(ex);
+            }
+        }
+
+        private bool TryGetUserId(out Guid userId) =>
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
+
+        private ObjectResult Fail(AuthException ex) =>
+            StatusCode(ex.StatusCode, new { message = ex.Message });
     }
 }

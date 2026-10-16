@@ -8,7 +8,8 @@
         public Guid CategoryId { get; set; }
         public Category? Category { get; set; } = null;
         public int CookingTimeMinutes { get; set; }
-        public List<Ingridients> Ingridients { get; set;} = new();
+        public List<Ingredients> Ingredients { get; set;} = new();
         public string UserId { get; set; } = default!;
+        public List<RecipeSteps> Steps { get; set; } = new();
     }
 }

@@ -243,4 +243,17 @@ C:\Users\Azim\Desktop\Новая папка\FoodRecipe\obj\Debug\net8.0\staticwe
 C:\Users\Azim\Desktop\Новая папка\FoodRecipe\obj\Debug\net8.0\FoodRecipe.csproj.Up2Date
 C:\Users\Azim\Desktop\Новая папка\FoodRecipe\obj\Debug\net8.0\FoodRecipe.genruntimeconfig.cache
 C:\Users\Azim\Desktop\Новая папка\FoodRecipe\obj\Debug\net8.0\ref\FoodRecipe.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\Google.Apis.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\Google.Apis.Auth.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\Google.Apis.Core.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\MailKit.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\Microsoft.Bcl.Cryptography.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\MimeKit.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\System.Formats.Asn1.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\System.Management.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
+C:\Users\Azim\Desktop\Новая папка\FoodRecipe\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\Azim\Desktop\Новая папка\FoodRecipe\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

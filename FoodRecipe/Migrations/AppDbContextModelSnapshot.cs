@@ -52,7 +52,51 @@ namespace FoodRecipe.Migrations
                     b.ToTable("category", (string)null);
                 });
 
-            modelBuilder.Entity("FoodRecipe.Entity.Ingridients", b =>
+            modelBuilder.Entity("FoodRecipe.Entity.EmailCode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempts");
+
+                    b.Property<string>("CodeHash")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("code_hash");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)")
+                        .HasColumnName("email");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<bool>("Used")
+                        .HasColumnType("boolean")
+                        .HasColumnName("used");
+
+                    b.HasKey("Id")
+                        .HasName("pk_email_code");
+
+                    b.HasIndex("Email")
+                        .HasDatabaseName("ix_email_code_email");
+
+                    b.ToTable("email_code", (string)null);
+                });
+
+            modelBuilder.Entity("FoodRecipe.Entity.Ingredients", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,25 +116,30 @@ namespace FoodRecipe.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer")
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric")
                         .HasColumnName("quantity");
 
                     b.Property<Guid>("RecipeId")
                         .HasColumnType("uuid")
                         .HasColumnName("recipe_id");
 
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("unit");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
-                        .HasName("pk_ingridients");
+                        .HasName("pk_ingredients");
 
                     b.HasIndex("RecipeId")
-                        .HasDatabaseName("ix_ingridients_recipe_id");
+                        .HasDatabaseName("ix_ingredients_recipe_id");
 
-                    b.ToTable("ingridients", (string)null);
+                    b.ToTable("ingredients", (string)null);
                 });
 
             modelBuilder.Entity("FoodRecipe.Entity.Recipe", b =>
@@ -148,6 +197,47 @@ namespace FoodRecipe.Migrations
                     b.ToTable("recipe", (string)null);
                 });
 
+            modelBuilder.Entity("FoodRecipe.Entity.RecipeSteps", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("recipe_id");
+
+                    b.Property<int>("StepNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("step_number");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_recipe_steps");
+
+                    b.HasIndex("RecipeId")
+                        .HasDatabaseName("ix_recipe_steps_recipe_id");
+
+                    b.ToTable("recipe_steps", (string)null);
+                });
+
             modelBuilder.Entity("FoodRecipe.Entity.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -155,40 +245,95 @@ namespace FoodRecipe.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)")
                         .HasColumnName("email");
 
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("email_confirmed");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("password_hash");
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("role");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
                     b.HasKey("Id")
                         .HasName("pk_user");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_email");
 
                     b.ToTable("user", (string)null);
                 });
 
-            modelBuilder.Entity("FoodRecipe.Entity.Ingridients", b =>
+            modelBuilder.Entity("FoodRecipe.Entity.UserLogin", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("provider");
+
+                    b.Property<string>("ProviderKey")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("provider_key");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_login");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_login_user_id");
+
+                    b.HasIndex("Provider", "ProviderKey")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_login_provider_provider_key");
+
+                    b.ToTable("user_login", (string)null);
+                });
+
+            modelBuilder.Entity("FoodRecipe.Entity.Ingredients", b =>
                 {
                     b.HasOne("FoodRecipe.Entity.Recipe", "Recipe")
-                        .WithMany("Ingridients")
+                        .WithMany("Ingredients")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_ingridients_recipe_recipe_id");
+                        .HasConstraintName("fk_ingredients_recipe_recipe_id");
 
                     b.Navigation("Recipe");
                 });
@@ -205,6 +350,30 @@ namespace FoodRecipe.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("FoodRecipe.Entity.RecipeSteps", b =>
+                {
+                    b.HasOne("FoodRecipe.Entity.Recipe", "Recipe")
+                        .WithMany("Steps")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_steps_recipe_recipe_id");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("FoodRecipe.Entity.UserLogin", b =>
+                {
+                    b.HasOne("FoodRecipe.Entity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_login_user_user_id");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FoodRecipe.Entity.Category", b =>
                 {
                     b.Navigation("Recipes");
@@ -212,7 +381,9 @@ namespace FoodRecipe.Migrations
 
             modelBuilder.Entity("FoodRecipe.Entity.Recipe", b =>
                 {
-                    b.Navigation("Ingridients");
+                    b.Navigation("Ingredients");
+
+                    b.Navigation("Steps");
                 });
 #pragma warning restore 612, 618
         }

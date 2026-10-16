@@ -43,9 +43,8 @@ namespace FoodRecipe.Controllers
         {
             return await _service.GetByIdAsync(id);
         }
-
         [HttpDelete("{id:guid}/permanent")]
-        [AllowAnonymous] // Временно для тестов без авторизации
+        [Authorize(Roles = "Admin")]
         public virtual async Task<IActionResult> PermanentDelete(Guid id, CancellationToken ct = default)
         {
             try
@@ -72,7 +71,7 @@ namespace FoodRecipe.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [AllowAnonymous]
+        [Authorize]
         public virtual async Task<IActionResult> Delete(Guid id, CancellationToken ct = default)
         {
             try

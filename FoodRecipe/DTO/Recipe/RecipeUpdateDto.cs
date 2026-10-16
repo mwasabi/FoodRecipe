@@ -1,4 +1,6 @@
-﻿namespace FoodRecipe.DTO.Recipe;
+﻿using FoodRecipe.DTO.Recipe;
+
+namespace FoodRecipe.DTO.Recipe;
 public class RecipeUpdateDTO
     {
         public string Name { get; set; } = string.Empty;
