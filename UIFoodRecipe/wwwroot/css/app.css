@@ -1,0 +1,692 @@
+/* Базовые стили страницы */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3f4f6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* НАСТРОЙКА ФОНА ИЗ PINTEREST: */
+    /* Первый слой (linear-gradient) — это затемняющий фильтр с прозрачностью 75%, чтобы обои были темными */
+    /* Второй слой (url) — путь к твоей скачанной картинке кофейни */
+    background: linear-gradient(rgba(15, 23, 42, 0.1), rgba(15, 23, 42, 0.1)), url('../images/bg.jpg') center/cover no-repeat fixed;
+    color: #f3f4f6;
+    margin: 0;
+    padding: 0;
+}
+
+/* Главный контейнер */
+.main-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Шапка с кнопкой профиля справа вверху */
+.top-header {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+}
+
+.profile-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .profile-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+/* Контейнер карусели */
+.carousel-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Окно просмотра скролла */
+.carousel-viewport {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 20px 10px;
+    scrollbar-width: none; /* Прячем дефолтный уродливый скроллбар в Firefox */
+}
+
+    /* Прячем скроллбар в Chrome/Safari/Edge */
+    .carousel-viewport::-webkit-scrollbar {
+        display: none;
+    }
+
+/* КРУТАЯ СОВРЕМЕННАЯ КАРТОЧКА (Вытянутая, стекломорфизм) */
+.category-card {
+    position: relative;
+    flex: 0 0 220px; /* Фиксированная ширина карточки */
+    height: 300px; /* Вытянутая аккуратная форма */
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.07); /* Эффект стекла */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+    /* Эффекты при наведении на карточку */
+    .category-card:hover {
+        transform: translateY(-10px); /* Плавный взлет */
+        border-color: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 15px 40px rgba(255, 107, 107, 0.25); /* Мягкое теплое свечение */
+    }
+
+/* Заглушка под картинку (мягкий красивый градиент на фоне) */
+.card-stub-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 168, 168, 0.15) 0%, rgba(252, 255, 0, 0.05) 100%);
+    z-index: 1;
+    transition: transform 0.6s ease;
+}
+
+.category-card:hover .card-stub-img {
+    transform: scale(1.1); /* Легкое увеличение фона при наведении */
+}
+
+/* Затемнение снизу для читаемости текста */
+.card-gradient-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+    z-index: 2;
+}
+
+/* Блок с текстом внутри карточки */
+.card-info {
+    position: relative;
+    z-index: 3;
+    color: #ffffff;
+}
+
+    .card-info h3 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin: 0 0 6px 0;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .card-info span {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+        transition: color 0.3s ease;
+    }
+
+.category-card:hover .card-info span {
+    color: #ff6b6b; /* Подсветка ссылки при наведении */
+}
+
+/* СТИЛЬНЫЕ СТРЕЛКИ ПРОКРУТКИ */
+.arrow-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    fill: #ffffff; /* Цвет стрелочки внутри SVG */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    opacity: 0.5; /* Слегка прозрачные в покое */
+}
+
+/* Проявление стрелок при наведении на всю карусель */
+.carousel-container:hover .arrow-btn {
+    opacity: 1;
+}
+
+.arrow-btn:hover {
+    background: #ff6b6b; /* Фирменный яркий цвет при наведении */
+    border-color: #ff6b6b;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+}
+
+/* Позиционирование стрелок по бокам */
+.arrow-left {
+    left: -10px;
+}
+
+.arrow-right {
+    right: -10px;
+}
+
+.arrow-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Контейнер для горизонтальных табов еды */
+.food-tabs-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 30px auto 10px auto;
+    padding: 0 20px;
+}
+
+/* Элегантная полупрозрачная кнопка таба */
+.food-tab-link {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.3px;
+}
+
+    /* Эффект Hover на табы */
+    .food-tab-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Активный выбранный таб с красным/оранжевым неоновым акцентом */
+    .food-tab-link.active-food-tab {
+        background: #ff6b6b;
+        color: #ffffff;
+        border-color: #ff6b6b;
+        box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+        font-weight: 600;
+    }
+
+/* Корректируем картинку внутри карточки, чтобы работал зум и Fit Cover */
+.category-card img.card-stub-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Заполняет всю карточку без искажений */
+    z-index: 1;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+
+/* Модальное окно авторизации */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-window {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 20px 25px rgba(0,0,0,0.15);
+    text-align: center;
+    position: relative;
+}
+
+.modal-close-x {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #9ca3af;
+}
+
+.modal-window h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.modal-window p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.btn-submit {
+    width: 100%;
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 16px;
+}
+
+    .btn-submit:hover {
+        background: #111827;
+    }
+
+/* Стандартная заглушка ошибок Blazor (снизу экрана) */
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 10px rgba(0,0,0,0.05);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+/* Контейнер для формы внутри модалки */
+.auth-form-container {
+    text-align: left;
+    margin-top: 10px;
+}
+
+/* Группа ввода (label + input) */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+    .input-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #4b5563;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1px solid #d1d5db;
+        font-size: 15px;
+        outline: none;
+        background-color: #f9fafb;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .input-group input:focus {
+            border-color: #f97316; /* Оранжевый акцент под стать карусели */
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+            background-color: white;
+        }
+
+/* Текст ошибки */
+.auth-error-msg {
+    color: #dc2626;
+    font-size: 13px;
+    background-color: #fee2e2;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    border-left: 4px solid #dc2626;
+}
+
+/* Кнопка возврата на шаг назад */
+.btn-back {
+    width: 100%;
+    background: transparent;
+    color: #6b7280;
+    border: none;
+    padding: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+    text-decoration: underline;
+}
+
+    .btn-back:hover {
+        color: #374151;
+    }
+
+/* Анимация загрузки (спиннер) внутри кнопки */
+.spinner-auth {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin-auth 0.8s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+@keyframes spin-auth {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Переключатели Вход / Регистрация */
+.auth-tabs {
+    display: flex;
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 10px;
+    color: #6b7280;
+    transition: all 0.2s;
+}
+
+    .tab-btn.active-tab {
+        background: white;
+        color: #1f2937;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+/* Компоненты вошедшего юзера в шапке */
+.user-profile-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 6px 14px 6px 6px;
+    border-radius: 30px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.profile-circle-logged {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #f97316; /* Наш фирменный оранжевый цвет */
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-logout-top {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+    .btn-logout-top:hover {
+        color: #b91c1c;
+    }
+
+/* Экран успеха ?? */
+.success-screen {
+    padding: 10px 0;
+}
+
+.success-icon {
+    font-size: 50px;
+    margin-bottom: 12px;
+}
+
+.success-text {
+    font-size: 15px;
+    color: #4b5563;
+    line-height: 1.5;
+    margin-bottom: 24px !important;
+}
+/* Контейнер для позиционирования меню */
+.profile-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Наша круглая аватарка теперь кликабельна */
+.profile-circle-logged {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .profile-circle-logged:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+    }
+
+/* Само всплывающее окно меню */
+.profile-dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    min-width: 240px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    animation: dropdown-fade-in 0.2s ease-out;
+}
+
+@keyframes dropdown-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Шапка меню (статус) */
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.user-status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981; /* Зеленый индикатор "В сети" */
+    border-radius: 50%;
+}
+
+.user-role-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Блок информации о пользователе */
+.dropdown-user-info {
+    background: #f9fafb;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #f3f4f6;
+}
+
+.user-email-label {
+    font-size: 11px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.user-email-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f2937;
+    margin: 2px 0 0 0;
+    word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Разделительная линия */
+.dropdown-divider {
+    border: 0;
+    border-top: 1px solid #f3f4f6;
+    margin: 12px 0;
+}
+
+/* Кнопка выхода внутри меню */
+.btn-dropdown-logout {
+    width: 100%;
+    background: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: #ef4444;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+    .btn-dropdown-logout:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+.logout-icon-sub {
+    font-size: 16px;
+}
+
+
+@page
+
+"/"
+
+<div class="main-container" >
+<!-- Верхняя панель с аватаркой профиля -->
+<header class="top-header" >
+<div class="profile-circle" @onclick="OpenAuthModal" >
+<!-- Здесь временно будет иконка, пока нет фото -->
+<span class="profile-placeholder" > ??</span >
+</div >
+</header >
+<!-- Центрированный блок с каруселью категорий -->
+<div class="carousel-section" >
+<button class="carousel-btn prev" @onclick="ScrollLeft" > ?</button >
+
+<div class="carousel-track" @ref="carouselTrack" >
+@for (int i = 1; i <= 5; i++) {
+    <div class="category-card"> <div class="card-image-stub"></div> <p>Категория @i</p> </div>
+}
+
+</div >
+
+<button class="carousel-btn next" @onclick="ScrollRight" > ?</button >
+</div >
+</div >
+<!-- Модальное окно авторизации/регистрации -->
+@if (isAuthModalOpen) {
+    <div class="modal-backdrop" @onclick="CloseAuthModal"> <div class="modal-content" @onclick:stopPropagation> <h3>Регистрация / Вход</h3> <p>Здесь будут твои поля для ввода данных и вызов логики авторизации.</p> <button class="btn-close" @onclick="CloseAuthModal">Закрыть</button> </div> </div>
+}
+
+@code {
+    private ElementReference carouselTrack;
+    private bool isAuthModalOpen = false;
+    // Логика открытия/закрытия окна регистрации private void OpenAuthModal() => isAuthModalOpen = true;
+    private void CloseAuthModal() => isAuthModalOpen = false;
+
+    // Заглушки для прокрутки карусели (в будущем можно улучшить через JS Interop)
+    private void ScrollLeft() {
+        // Логика прокрутки влево
+    }
+
+    private void ScrollRight() {
+        // Логика прокрутки вправо
+    }
+}

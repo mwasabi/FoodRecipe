@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UIFoodRecipe</title>
+    <base href="/" />
+    <!-- Подключаем Tailwind CSS для красивого дизайна и анимаций -->
+    <script src="https://tailwindcss.com"></script>
+    <!-- Подключаем FontAwesome для красивых иконок стрелок и пользователя -->
+    <link rel="stylesheet" href="https://cloudflare.com" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="UIFoodRecipe.styles.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+    <div id="app">
+        <!-- Экран загрузки -->
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui" class="hidden fixed bottom-0 left-0 w-full bg-red-100 text-red-900 p-3 z-50 shadow-lg">
+        Произошла ошибка. <a href="" class="reload underline font-semibold">Перезагрузить</a>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+
+    <!-- Краткий нативный скрипт для плавной прокрутки карусели -->
+    <script>
+        window.carouselFunctions = {
+            scroll: function (element, direction) {
+                if (element) {
+                    const scrollAmount = element.clientWidth / 3 + 20; // Смещение на одну карточку + gap
+                    element.scrollBy({
+                        left: direction === 'left' ? -scrollAmount : scrollAmount,
+                        behavior: 'smooth'
+                    });
+                }
+            } < !DOCTYPE html>
+            <html lang="ru">
+
+                <head>
+                    <meta charset="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <title>UIFoodRecipe</title>
+                    <base href="/" />
+                    <!-- Возвращаем локальный файл стилей -->
+                    <link rel="stylesheet" href="css/app.css" />
+                    <link rel="icon" type="image/png" href="favicon.png" />
+                    <link href="UIFoodRecipe.styles.css" rel="stylesheet" />
+                </head>
+
+                <body>
+                    <div id="app">
+                        <div class="loading-box">Загрузка...</div>
+                    </div>
+
+                    <div id="blazor-error-ui">
+                        Произошла ошибка. <a href="" class="reload">Перезагрузить</a>
+                        <a class="dismiss">🗙</a>
+                    </div>
+
+                    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>
+
+        
+    </script>
+</body>
+
+</html>

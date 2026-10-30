@@ -1,0 +1,441 @@
+﻿@page "/"
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+
+<div class="main-wrapper">
+    
+       <!-- Шапка приложения с динамической кнопкой профиля -->
+    <header class="top-header">
+        @if (isUserLoggedIn)
+        {
+            <!-- Если пользователь ВОШЕЛ: только круглая аватарка, открывающая меню -->
+            <div class="profile-menu-container">
+                <div class="profile-circle-logged" @onclick="ToggleProfileMenu">
+                    @userEmail.Substring(0, 1).ToUpper()
+                </div>
+
+                <!-- Всплывающее меню пользователя -->
+                @if (isProfileMenuOpen)
+                {
+                    <div class="profile-dropdown-menu">
+                        <div class="dropdown-header">
+                            <span class="user-status-dot"></span>
+                            <span class="user-role-text">Личный кабинет</span>
+                        </div>
+                        <div class="dropdown-user-info">
+                            <p class="user-email-label">Email</p>
+                            <p class="user-email-value" title="@userEmail">@userEmail</p>
+                        </div>
+                        <hr class="dropdown-divider" />
+                        <button @onclick="Logout" class="btn-dropdown-logout">
+                            <span class="logout-icon-sub">🚪</span> Выйти из аккаунта
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Если пользователь НЕ вошел: обычный силуэт -->
+            <button @onclick="OpenAuthModal" class="profile-btn">
+                👤
+            </button>
+        }
+    </header>
+    <!-- Секция Табов над каруселью -->
+<div class="food-tabs-container">
+    @foreach (var tab in foodTabs)
+    {
+        <button class="food-tab-link @(activeTab == tab ? "active-food-tab" : "")" 
+                @onclick="() => ChangeTab(tab)">
+            @tab
+        </button>
+    }
+</div>
+
+<!-- Основная секция карусели -->
+<div class="carousel-container">
+    <button class="arrow-btn arrow-left" @onclick="ScrollLeft">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    </button>
+    
+    <div class="carousel-viewport">
+        <!-- Фильтруем массив по активной группе табов -->
+        @foreach (var cat in allCategories.Where(c => c.TabGroup == activeTab))
+        {
+            <div class="category-card" @onclick="() => HandleCategoryClick(cat.Id)">
+                
+                @if (!string.IsNullOrEmpty(cat.SearchTag))
+                {
+                    <!-- Прямая рабочая ссылка на случайное кулинарное фото по тегу -->
+                   <img class="card-stub-img" 
+     src="https://unsplash.com" 
+     alt="@cat.Name" />
+
+                }
+                else
+                {
+                    <!-- Если тег пустой — показываем красивую цветную заглушку -->
+                    <div class="card-stub-img" style="background: linear-gradient(135deg, rgba(255,168,168,0.15) 0%, rgba(252,255,0,0.05) 100%);"></div>
+                }
+                
+                <div class="card-gradient-overlay"></div>
+                <div class="card-info">
+                    <h3>@cat.Name</h3>
+                    <span>Посмотреть рецепты</span>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <button class="arrow-btn arrow-right" @onclick="ScrollRight">
+        <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+    </button>
+</div>
+
+
+</div>
+
+<!-- Модальное окно системы авторизации -->
+@if (isAuthModalOpen)
+{
+    <div class="modal-overlay" @onclick="CloseAuthModal">
+        <div class="modal-window" @onclick:stopPropagation>
+            
+            <button @onclick="CloseAuthModal" class="modal-close-x">✕</button>
+
+            @if (showSuccessScreen)
+            {
+                <!-- ОКНО 3: Поздравление с успешной регистрацией -->
+                <div class="success-screen">
+                    <div class="success-icon">🎉</div>
+                    <h3>Успешно!</h3>
+                    <p class="success-text">Вы успешно зарегистрировались и вошли в систему под почтой <strong>@userEmail</strong>.</p>
+                    <button @onclick="CloseAuthModal" class="btn-submit">Отлично, к рецептам!</button>
+                </div>
+            }
+            else
+            {
+                <!-- Заголовок переключается в зависимости от Входа/Регистрации -->
+                <h3>@(isRegistrationMode ? "Регистрация" : "Вход в аккаунт")</h3>
+                <p>Добро пожаловать в книгу рецептов</p>
+
+                <!-- Табы выбора режима (Регистрация или Вход) — скрываем на этапе ввода кода -->
+                @if (!isCodeStage)
+                {
+                    <div class="auth-tabs">
+                        <button class="tab-btn @(!isRegistrationMode ? "active-tab" : "")" @onclick="() => SetAuthMode(false)">Вход</button>
+                        <button class="tab-btn @(isRegistrationMode ? "active-tab" : "")" @onclick="() => SetAuthMode(true)">Регистрация</button>
+                    </div>
+                }
+
+                <div class="auth-form-container">
+                    @if (!isCodeStage)
+                    {
+                        <!-- Этап 1: Ввод Email -->
+                        <div class="input-group">
+                            <label for="emailInput">Электронная почта</label>
+                            <input id="emailInput" type="email" placeholder="example@mail.com" @bind="userEmail" disabled="@isSending" />
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <div class="auth-error-msg">@errorMessage</div>
+                        }
+
+                        <button class="btn-submit" @onclick="SendCode" disabled="@isSending">
+                            @if (isSending)
+                            {
+                                <span class="spinner-auth"></span> <span>Отправка...</span>
+                            }
+                            else
+                            {
+                                <span>Получить код</span>
+                            }
+                        </button>
+                    }
+                    else
+                    {
+                        <!-- Этап 2: Ввод проверочного кода -->
+                        <div class="input-group">
+                            <label for="codeInput">Код подтверждения из письма</label>
+                            <input id="codeInput" type="text" placeholder="Введите код" @bind="verificationCode" disabled="@isVerifying" maxlength="6" style="text-align: center; font-size: 20px; letter-spacing: 4px;" />
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <div class="auth-error-msg">@errorMessage</div>
+                        }
+
+                        <button class="btn-submit" @onclick="VerifyCode" disabled="@isVerifying">
+                            @if (isVerifying)
+                            {
+                                <span class="spinner-auth"></span> <span>Проверить и войти</span>
+                            }
+                            else
+                            {
+                                <span>Войти</span>
+                            }
+                        </button>
+
+                        <button class="btn-back" @onclick="BackToEmail" disabled="@isVerifying">
+                            Изменить Email
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+@code {
+    // Статус пользователя в системе
+    private bool isUserLoggedIn = false;
+    
+    // Переключение режимов работы формы
+    private bool isAuthModalOpen = false;
+    private bool isRegistrationMode = false; // false - Вход, true - Регистрация
+    private bool isCodeStage = false;         
+    private bool showSuccessScreen = false;   // Экран с поздравлением 🎉
+    
+    private bool isSending = false;        
+    private bool isVerifying = false;      
+    
+    private string userEmail = "";
+    private string verificationCode = "";
+    private string errorMessage = "";
+
+    private void OpenAuthModal() 
+    {
+        ResetForm();
+        isAuthModalOpen = true;
+    }
+    
+    private void CloseAuthModal() => isAuthModalOpen = false;
+
+    private void SetAuthMode(bool registration)
+    {
+        isRegistrationMode = registration;
+        errorMessage = "";
+    }
+
+    private void BackToEmail()
+    {
+        isCodeStage = false;
+        errorMessage = "";
+        verificationCode = "";
+    }
+
+    private void ResetForm()
+    {
+        isCodeStage = false;
+        showSuccessScreen = false;
+        isSending = false;
+        isVerifying = false;
+        verificationCode = "";
+        errorMessage = "";
+    }
+
+    private async Task ScrollLeft() => await JSRuntime.InvokeVoidAsync("scrollCarousel", "left");
+    private async Task ScrollRight() => await JSRuntime.InvokeVoidAsync("scrollCarousel", "right");
+
+    private async Task SendCode()
+    {
+        if (string.IsNullOrWhiteSpace(userEmail) || !userEmail.Contains("@"))
+        {
+            errorMessage = "Пожалуйста, введите корректный Email.";
+            return;
+        }
+
+        errorMessage = "";
+        isSending = true;
+
+        try
+        {
+            var requestData = new SendCodeModel { Email = userEmail };
+            var response = await Http.PostAsJsonAsync("api/Auth/email/send-code", requestData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                isCodeStage = true;
+            }
+            else
+            {
+                var errorText = await response.Content.ReadAsStringAsync();
+                errorMessage = !string.IsNullOrEmpty(errorText) ? errorText : "Ошибка работы сервера.";
+            }
+        }
+        catch (Exception)
+        {
+            errorMessage = "Не удалось связаться с сервером. Проверь бэкенд.";
+        }
+        finally
+        {
+            isSending = false;
+        }
+    }
+
+    private async Task VerifyCode()
+    {
+        if (string.IsNullOrWhiteSpace(verificationCode))
+        {
+            errorMessage = "Введите проверочный код.";
+            return;
+        }
+
+        errorMessage = "";
+        isVerifying = true;
+
+        try
+        {
+            var requestData = new VerifyCodeModel { Email = userEmail, Code = verificationCode };
+            var response = await Http.PostAsJsonAsync("api/Auth/email/verify", requestData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                isUserLoggedIn = true;
+
+                if (isRegistrationMode)
+                {
+                    // Если была регистрация — включаем поздравительное окно
+                    showSuccessScreen = true;
+                }
+                else
+                {
+                    // Если просто вход — закрываем окно
+                    CloseAuthModal();
+                }
+            }
+            else
+            {
+                var errorText = await response.Content.ReadAsStringAsync();
+                errorMessage = !string.IsNullOrEmpty(errorText) ? errorText : "Неверный проверочный код.";
+            }
+        }
+        catch (Exception)
+        {
+            errorMessage = "Ошибка при верификации.";
+        }
+        finally
+        {
+            isVerifying = false;
+        }
+    }
+        // Состояние открытия выпадающего меню пользователя
+    private bool isProfileMenuOpen = false;
+
+    // Метод переключения видимости меню при клике на аватарку
+    private void ToggleProfileMenu()
+    {
+        isProfileMenuOpen = !isProfileMenuOpen;
+    }
+
+    // Модифицируем существующий метод Logout, чтобы он также закрывал меню
+    private void Logout()
+    {
+        isUserLoggedIn = false;
+        isProfileMenuOpen = false; // <-- Сбрасываем меню при выходе
+        ResetForm();
+        userEmail = "";
+    }
+    private string activeTab = "Основные блюда"; // Выбранный таб по умолчанию
+
+private List<string> foodTabs = new()
+{
+    "Основные блюда", "Завтраки и Выпечка", "Закуски и Салаты", 
+    "Кухни мира", "Ингредиенты", "Особое и Диеты"
+};
+
+private List<Category> allCategories = new()
+{
+    // === ТАБ: Основные блюда (11 категорий) ===
+    new Category { Id = 1, Name = "Супы и бульоны", TabGroup = "Основные блюда", ImageUrl = "", SearchTag = "soup" },
+    new Category { Id = 2, Name = "Горячие блюда", TabGroup = "Основные блюда", ImageUrl = "", SearchTag = "steak" },
+    new Category { Id = 3, Name = "Блюда из птицы", TabGroup = "Основные блюда", ImageUrl = "", SearchTag = "chicken-food" },   
+    new Category { Id = 18, Name = "Пицца", TabGroup = "Завтраки и Выпечка", ImageUrl = "", SearchTag = "pizza" },
+    new Category { Id = 6, Name = "Гарниры", TabGroup = "Основные блюда", ImageUrl = "images/categories/sides.jpg" },
+    new Category { Id = 7, Name = "Паста и ризотто", TabGroup = "Основные блюда", ImageUrl = "images/categories/pasta.jpg" },
+    new Category { Id = 8, Name = "Блюда на гриле и барбекю", TabGroup = "Основные блюда", ImageUrl = "images/categories/bbq.jpg" },
+    new Category { Id = 9, Name = "Пельмени и вареники", TabGroup = "Основные блюда", ImageUrl = "images/categories/dumplings.jpg" },
+    new Category { Id = 10, Name = "Каши и крупы", TabGroup = "Основные блюда", ImageUrl = "images/categories/porridge.jpg" },
+    new Category { Id = 11, Name = "Стритфуд и фастфуд", TabGroup = "Основные блюда", ImageUrl = "images/categories/fastfood.jpg" },
+
+    // === ТАБ: Завтраки и Выпечка (11 категорий) ===
+    new Category { Id = 12, Name = "Завтраки", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/breakfast.jpg" },
+    new Category { Id = 13, Name = "Выпечка и хлеб", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/bread.jpg" },
+    new Category { Id = 14, Name = "Блины, оладьи, сырники", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/pancakes.jpg" },
+    new Category { Id = 15, Name = "Торты и пирожные", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/cakes.jpg" },
+    new Category { Id = 16, Name = "Десерты и сладости", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/desserts.jpg" },
+    new Category { Id = 17, Name = "Пироги и тарты", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/pies.jpg" },
+    new Category { Id = 18, Name = "Пицца", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/pizza.jpg" },
+    new Category { Id = 19, Name = "Домашнее печенье", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/cookies.jpg" },
+    new Category { Id = 20, Name = "Мороженое и сорбеты", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/icecream.jpg" },
+    new Category { Id = 21, Name = "Несладкая выпечка", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/savory_baking.jpg" },
+    new Category { Id = 22, Name = "Праздничная выпечка", TabGroup = "Завтраки и Выпечка", ImageUrl = "images/categories/holiday_baking.jpg" },
+
+    // === ТАБ: Закуски и Салаты (10 категорий) ===
+    new Category { Id = 23, Name = "Салаты", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/salads.jpg" },
+    new Category { Id = 24, Name = "Холодные закуски", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/cold_appetizers.jpg" },
+    new Category { Id = 25, Name = "Горячие закуски", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/hot_appetizers.jpg" },
+    new Category { Id = 26, Name = "Бутерброды, брускетты, сэндвичи", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/sandwiches.jpg" },
+    new Category { Id = 27, Name = "Соусы, маринады, заправки", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/sauces.jpg" },
+    new Category { Id = 28, Name = "Сыры и сырные тарелки", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/cheese.jpg" },
+    new Category { Id = 29, Name = "Заготовки и консервация", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/preserves.jpg" },
+    new Category { Id = 30, Name = "Вяленое мясо и колбасы", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/charcuterie.jpg" },
+    new Category { Id = 31, Name = "Паштеты и дипы", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/pates.jpg" },
+    new Category { Id = 32, Name = "Чипсы, сухарики, снеки", TabGroup = "Закуски и Салаты", ImageUrl = "images/categories/snacks.jpg" },
+
+    // === ТАБ: Кухни мира (11 категорий) ===
+    new Category { Id = 33, Name = "Итальянская кухня", TabGroup = "Кухни мира", ImageUrl = "images/categories/italian.jpg" },
+    new Category { Id = 34, Name = "Азиатская кухня (Суши, Вок)", TabGroup = "Кухни мира", ImageUrl = "images/categories/asian.jpg" },
+    new Category { Id = 35, Name = "Грузинская кухня", TabGroup = "Кухни мира", ImageUrl = "images/categories/georgian.jpg" },
+    new Category { Id = 36, Name = "Французская классика", TabGroup = "Кухни мира", ImageUrl = "images/categories/french.jpg" },
+    new Category { Id = 37, Name = "Средиземноморская кухня", TabGroup = "Кухни мира", ImageUrl = "images/categories/mediterranean.jpg" },
+    new Category { Id = 38, Name = "Мексиканская острая", TabGroup = "Кухни мира", ImageUrl = "images/categories/mexican.jpg" },
+    new Category { Id = 39, Name = "Восточные сладости и блюда", TabGroup = "Кухни мира", ImageUrl = "images/categories/eastern.jpg" },
+    new Category { Id = 40, Name = "Славянская кухня", TabGroup = "Кухни мира", ImageUrl = "images/categories/slavic.jpg" },
+    new Category { Id = 41, Name = "Американская кухня", TabGroup = "Кухни мира", ImageUrl = "images/categories/american.jpg" },
+    new Category { Id = 42, Name = "Скандинавская кухня", TabGroup = "Кухни мира", ImageUrl = "images/categories/nordic.jpg" },
+    new Category { Id = 43, Name = "Индийский карри и специи", TabGroup = "Кухни мира", ImageUrl = "images/categories/indian.jpg" },
+
+    // === ТАБ: Ингредиенты (11 категорий) ===
+    new Category { Id = 44, Name = "Блюда из грибов", TabGroup = "Ингредиенты", ImageUrl = "images/categories/mushrooms.jpg" },
+    new Category { Id = 45, Name = "Овощное рагу и запеканки", TabGroup = "Ингредиенты", ImageUrl = "images/categories/vegetables.jpg" },
+    new Category { Id = 46, Name = "Фруктовые нарезки и салаты", TabGroup = "Ингредиенты", ImageUrl = "images/categories/fruits.jpg" },
+    new Category { Id = 47, Name = "Блюда из фарша", TabGroup = "Ингредиенты", ImageUrl = "images/categories/minced_meat.jpg" },
+    new Category { Id = 48, Name = "Шоколадные деликатесы", TabGroup = "Ингредиенты", ImageUrl = "images/categories/chocolate.jpg" },
+    new Category { Id = 49, Name = "Орехи и сухофрукты", TabGroup = "Ингредиенты", ImageUrl = "images/categories/nuts.jpg" },
+    new Category { Id = 50, Name = "Блюда на основе яиц", TabGroup = "Ингредиенты", ImageUrl = "images/categories/eggs.jpg" },
+    new Category { Id = 51, Name = "Творог и молочные продукты", TabGroup = "Ингредиенты", ImageUrl = "images/categories/dairy.jpg" },
+    new Category { Id = 52, Name = "Ягоды и джемы", TabGroup = "Ингредиенты", ImageUrl = "images/categories/berries.jpg" },
+    new Category { Id = 53, Name = "Зелень и травы", TabGroup = "Ингредиенты", ImageUrl = "images/categories/herbs.jpg" },
+    new Category { Id = 54, Name = "Морепродукты премиум", TabGroup = "Ингредиенты", ImageUrl = "images/categories/premium_seafood.jpg" },
+
+    // === ТАБ: Особое и Диеты (10 категорий) ===
+    new Category { Id = 55, Name = "Вегетарианские рецепты", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/vegetarian.jpg" },
+    new Category { Id = 56, Name = "ПП (Правильное питание)", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/healthy.jpg" },
+    new Category { Id = 57, Name = "Детское меню", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/kids.jpg" },
+    new Category { Id = 58, Name = "Низкокалорийные блюда", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/low_cal.jpg" },
+    new Category { Id = 59, Name = "Постные блюда", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/lenten.jpg" },
+    new Category { Id = 60, Name = "Кето-диета", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/keto.jpg" },
+    new Category { Id = 61, Name = "Безглютеновые рецепты", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/gluten_free.jpg" },
+    new Category { Id = 62, Name = "Детокс и смузи", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/detox.jpg" },
+    new Category { Id = 63, Name = "Рецепты-пятиминутки (Быстро)", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/fast_cook.jpg" },
+    new Category { Id = 64, Name = "Для романтического ужина", TabGroup = "Особое и Диеты", ImageUrl = "images/categories/romantic.jpg" }
+};
+
+// Метод смены таба
+private void ChangeTab(string tabName)
+{
+    activeTab = tabName;
+}
+private void HandleCategoryClick(int categoryId)
+{
+    // Сюда добавим навигацию позже, например: NavigationManager.NavigateTo($"/recipes/{categoryId}");
+}
+
+}
+
+
+
+
